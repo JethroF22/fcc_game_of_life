@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Cell from './Cell.js';
 import Grid from './Grid.js';
-import './App.css';
+import './styles.css';
 
 
 class App extends Component {
@@ -9,6 +9,7 @@ class App extends Component {
         super(props);
         this.state = {
             inputValue: "",
+            size: 0,
             cells: [],
             grid: [],
             oldGrid: [],
@@ -128,6 +129,7 @@ class App extends Component {
 
     updateGrid(){
         let generation = this.state.generation + 1;
+        let num_living_cells = 0;
         let grid = this.state.grid;
         let new_grid = [];
         grid.forEach((grid_row, i) => {
@@ -148,6 +150,7 @@ class App extends Component {
                 } else {
                     new_state = (living_neighbours === 3 ? "X" : "O");
                 }
+                num_living_cells += (new_state === "X" ? 1 : 0)
                 let new_grid_obj = {
                     cell_state: new_state,
                     neighbours: grid_obj.neighbours
@@ -161,6 +164,10 @@ class App extends Component {
             grid: new_grid,
             generation: generation,
         });
+        if (num_living_cells === 0) {
+            alert("After " + generation + " generations, all the cells have died.");
+            clearInterval(this.intervalId);
+        }
     }
 
     start(){
@@ -181,32 +188,52 @@ class App extends Component {
     render() {
         let cells = this.createCells();
         let controls = (
-            <div>
-                <button onClick={this.start}>Start</button>
-                <button onClick={(this.state.paused ? this.start : this.pause)}>{this.state.paused ? "Resume" : "Pause"}</button>
-                <button onClick={this.clear}>Clear</button>
+            <div className="controls">
+                <button
+                    onClick={this.start}
+                    disabled={this.state.size === 0 ? "disabled" : ""}
+                >Start</button>
+                <button
+                    onClick={(this.state.paused ? this.start : this.pause)}
+                    disabled={this.state.size === 0 ? "disabled" : ""}
+                >{this.state.paused ? "Resume" : "Pause"}</button>
+                <button
+                    onClick={this.clear}
+                    disabled={this.state.size === 0 ? "disabled" : ""}
+                >Clear</button>
             </div>
         )
         return (
             <div className="App">
-                <label>
-                    Enter the number of cells per row:
-                    <input
-                        type="text"
-                        value={this.state.inputValue}
-                        onChange={this.handleChange}
-                    />
-                    <button
-                        onClick={this.setSize}
-                    >Set size</button>
-                    <button
-                        onClick={this.updateGrid}
-                    >Next</button>
-                </label>
-                <div>{this.state.grid.length === 0 ? "" : controls}</div>
-                <div>Generation: {this.state.generation}</div>
-                <Grid cells={cells} />
+                <header>
+                    <h1>Game Of Life</h1>
+                </header>
+                <div className="input">
+                    <label>
+                        <div>Enter the number of cells per row:</div>
+                        <div>
+                        <input
+                            type="text"
+                            value={this.state.inputValue}
+                            onChange={this.handleChange}
+                        />
+                        <button
+                            onClick={this.setSize}
+                        >Set size</button>
+                        </div>
+                        <div>
 
+                        </div>
+                    </label>
+                </div>
+                {controls}
+                <div className="generation">
+                    <p>Generation: {this.state.generation}</p>
+                </div>
+                <div className="cells">
+
+                    <Grid cells={cells}/>
+                </div>
             </div>
         );
     }

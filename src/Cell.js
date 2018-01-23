@@ -21,7 +21,7 @@ class Cell extends Component{
         let styles = {
             width: width,
             height: height,
-            backgroundColor: (this.props.state === "X" ? "red" : "black"),
+            backgroundColor: (this.props.state === "X" ? "#607d8b" : "black"),
             border: "1px solid white",
             display: "inline-block",
             padding: "0px",

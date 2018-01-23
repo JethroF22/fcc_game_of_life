@@ -6,10 +6,9 @@ class Grid extends Component{
             <div
                 id="grid"
                 style={{
-                    width: "600px",
-                    height: "600px",
-                    margin: "0 auto",
-                    border: "1px solid black"}}
+                    width: "30em",
+                    height: "30em",
+                    border: "2px double white"}}
             >{this.props.cells}</div>
         )
     }
